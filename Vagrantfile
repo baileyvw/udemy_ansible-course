@@ -10,8 +10,18 @@
 #
 # This should put you at the control host
 #  with access, by name, to other vms
+
+# Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  # config.vm.box_check_update = false
+
 Vagrant.configure(2) do |config|
   config.hostmanager.enabled = true
+# Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  config.vm.box_check_update = false
 
   config.vm.box = "ubuntu/trusty64"
 
