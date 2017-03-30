@@ -1,5 +1,7 @@
 ---
   - hosts: all
     tasks:
-      - command: hostname
+# Adding a name to the task and running the command if no name is given then you need to "-" before the "command# eg "- command: hostname"
+      - name: Get the server name	
+        command: hostname
 
