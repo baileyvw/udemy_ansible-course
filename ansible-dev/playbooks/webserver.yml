@@ -1,0 +1,31 @@
+---
+  - hosts: webapps
+    become: true
+    become_user: root
+    tasks:
+# Adding a name to a task and running the command
+#      - name: Install web packages # ( the update_cache=yes does apt-get update -y )
+
+ - name: Install web packages apache2 # ( the update_cache=yes does apt-get update -y )
+      apt: name=apache2 state=present update_cache=yes
+
+    - name: Install web packages # ( the update_cache=yes does apt-get update -y )
+      apt: name=libapache2-mod-wsgi state=present update_cache=yes
+
+    - name: Install web packages # ( the update_cache=yes does apt-get update -y )
+      apt: name=python-pip state=present update_cache=yes
+
+    - name: Install web packages # ( the update_cache=yes does apt-get update -y )
+      apt: name=python-virtualenv state=present update_cache=yes
+
+    - name: Install update packages # ( the update_cache=yes does apt-get update -y )
+      apt: name=update state=present update_cache=yes
+
+- name: Check if apache2 has started
+      service: name=apache2 state=started enabled=yes
+  #        apt: name={{item}} state=present update_cache=yes
+  #        with_items:
+  #          - apache2
+#            - libapache2-mod-wsgi
+#            - python-ipi
+#            - python-virtualenv

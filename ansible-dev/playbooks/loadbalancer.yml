@@ -1,0 +1,13 @@
+---
+  - hosts: loadbalancer
+    tasks:
+    become: true
+    become_user: root
+# Adding a name to a task and running the command
+      - name: Install packages nginx # ( the update_cache=yes does apt-get update -y )
+        apt: name=nginx state=present update_cache=yes
+
+      - name: Install update packages # ( the update_cache=yes does apt-get update -y )
+        apt: name=update state=present update_cache=yes
+      - name: Checking the service is up and running
+        service: name=nginx state=started enabled=yes

@@ -1,0 +1,21 @@
+---
+  - hosts: control
+    become: true
+    #become_user: root
+    tasks:
+# Adding a name to a task and running the command
+#      - name: Install web packages # ( the update_cache=yes does apt-get update -y )
+
+
+       - name: Install update packages # ( the update_cache=yes does apt-get update -y )
+         apt: name=update state=present update_cache=yes
+       - name: Install web curl # ( the update_cache=yes does apt-get update -y )
+      #apt: name=apache2 state=present update_cache=yes
+         apt: name={{item}} state=present update_cache=yes
+         with_items:
+           - curl
+           - software-properties-common
+           - repository ppa:ansible/ansible
+           - update
+           - ansible
+           - update
