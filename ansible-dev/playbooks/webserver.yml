@@ -6,26 +6,62 @@
 # Adding a name to a task and running the command
 #      - name: Install web packages # ( the update_cache=yes does apt-get update -y )
 
- - name: Install web packages apache2 # ( the update_cache=yes does apt-get update -y )
+    - name: Install web packages apache2
       apt: name=apache2 state=present update_cache=yes
 
-    - name: Install web packages # ( the update_cache=yes does apt-get update -y )
+    - name: Install web packages lib
       apt: name=libapache2-mod-wsgi state=present update_cache=yes
 
-    - name: Install web packages # ( the update_cache=yes does apt-get update -y )
+    - name: Install web packages pip
       apt: name=python-pip state=present update_cache=yes
 
-    - name: Install web packages # ( the update_cache=yes does apt-get update -y )
+    - name: Install web packages virt
       apt: name=python-virtualenv state=present update_cache=yes
 
-    - name: Install update packages # ( the update_cache=yes does apt-get update -y )
+    - name: Install update packages update
       apt: name=update state=present update_cache=yes
 
-- name: Check if apache2 has started
+    - name: Check if apache2 has started
       service: name=apache2 state=started enabled=yes
-  #        apt: name={{item}} state=present update_cache=yes
-  #        with_items:
+      apt: name={{item}} state=present update_cache=yes
+      with_items:
+      - python-mysqldb
+      notify: restart apache2
   #          - apache2
 #            - libapache2-mod-wsgi
-#            - python-ipi
+#            - python-pip
 #            - python-virtualenv
+# check database system to ensure database has beeen created and user account
+# mysql -u root -p
+# show databases;
+# SELECT User FROM mysql.user;
+    - name: Ensure mod_swgi is enabled
+      apache2_module: state=present name=wsgi
+      notify: restart apache2
+
+    - name: copy demo app source
+      copy: src=demo/app/ dest=/var/www/demo mode=0755
+      notify: restart apache2
+
+    - name: copy apache virtual host config
+      copy: src=demo/demo.conf dest=/etc/apache2/sites-available mode=0755
+      notify: restart apache2
+
+    - name: setup python virtualenv
+      pip: requirements=/var/www/demo/requirements.txt virtualenv=/var/www/demo/.venv
+      notify: restart apache2
+
+    - name: de-activate default apache site
+      file: path=/etc/apache2/sites-enabled/000-default.conf state=absent
+      notify: restart apache2
+
+    - name: activate demo apache site
+      file: src=/etc/apache2/sites-available/demo.conf dest=/etc/apache2/sites-enabled/demo.conf state=link
+      notify: restart apache2
+# if you have problems with the webserver error no domain.
+# echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf
+# sudo a2enconf fqdn
+
+  handlers:
+    - name: restart apache2
+      service: name=apache2 state=restarted

@@ -19,3 +19,14 @@
            - update
            - ansible
            - update
+           - python-httplib2
+#           ansible@control:~/ansible-dev/playbooks$ curl app01/db
+#           Database Connected from app01!
+#           ansible@control:~/ansible-dev/playbooks$ curl app02/db
+#           Database Connected from app02!
+#           ansible@control:~/ansible-dev/playbooks$ curl lb01/db
+#           Database Connected from app02!
+## check database system to ensure database has beeen created and user account
+# mysql -u root -p
+# show databases;
+# SELECT User FROM mysql.user;
